@@ -6,6 +6,9 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const PumpGraph = () => {
+
+  const [currentPoint, setCurrentPoint] = useState({ head: 31, flow: 40 });
+
   // Example data for motor pump flow
   const dataPoints = [
     {head :0,flow:28},
@@ -57,14 +60,33 @@ const PumpGraph = () => {
   ]
   ;
 
-  // State for current operating point
-  const [currentPoint, setCurrentPoint] = useState({ head: 31, flow: 40 });
+  const limitsGroup = [
+    { head: 1, flow: { min: 25, max: 30 } },
+    { head: 2, flow: { min: 18, max: 28 } },
+    { head: 3, flow: { min: 15, max: 28 } },
+    { head: 4, flow: { min: 18, max: 28 } },
+    { head: 5, flow: { min: 8, max: 25 } },
+    { head: 6, flow: { min: 0, max: 10 } },
+    // {head:7,flow:{min:5,max:23}}
+  ];
 
+  const isWithinGroupedLimits = (head, flow) => {
+    const limit = limitsGroup.find((limit) => limit.head === Math.ceil(head));
+    if (limit) {
+      return flow >= limit.flow.min && flow <= limit.flow.max;
+    }
+    return false;
+  };
+
+  const pointColor = isWithinGroupedLimits(currentPoint.head, currentPoint.flow) ? 'green' : 'orange';
+
+  // State for current operating point
+  
   const genval = () => {
     setTimeout(() => {
       const math = Math.floor(Math.random() * 30);
       setCurrentPoint(data[math]);
-    }, 1000);
+    }, 2000);
   };
   genval();
 
@@ -96,7 +118,7 @@ const PumpGraph = () => {
         label: 'Current Operating Point',
         data: [{ x: currentPoint.head, y: currentPoint.flow }],
         pointRadius: 10, // Size of the red dot
-        pointBackgroundColor: 'red', // Red color for the point
+        pointBackgroundColor: pointColor, // Red color for the point
         pointBorderColor: 'black', // Black border for the point
         showLine: false, // No line connecting this point
         fill: false,
