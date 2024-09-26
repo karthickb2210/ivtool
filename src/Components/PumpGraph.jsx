@@ -11,8 +11,8 @@ const PumpGraph = () => {
 
   // Example data for motor pump flow
   const dataPoints = [
-    {head :0,flow:28},
-    { head:1.6,flow : 27},
+    { head: 0, flow: 28 },
+    { head: 1.6, flow: 27 },
     { head: 2.3, flow: 26 },
     { head: 3.8, flow: 25 },
     { head: 4.2, flow: 22 },
@@ -23,42 +23,40 @@ const PumpGraph = () => {
 
   // Random dataset for generating operating point
   const data = [
-    
-    {head: 3.1, flow: 19},
-    {head: 2.4, flow: 17},
-    {head: 1.6, flow: 23},
-    {head: 2.8, flow: 19},
-    {head: 2.1, flow: 20},
-    {head: 4.9, flow: 22},
-    {head: 4.4, flow: 29},
-    {head: 1.3, flow: 19},
-    {head: 4.7, flow: 16},
-    {head: 2.3, flow: 17},
-    {head: 2.9, flow: 27},
-    {head: 1.6, flow: 27},
-    {head: 4.8, flow: 26},
-    {head: 1.1, flow: 12},
-    {head: 1.0, flow: 30},
-    {head: 4.9, flow: 23},
-    {head: 3.3, flow: 22},
-    {head: 1.1, flow: 4},
-    {head: 3.6, flow: 13},
-    {head: 1.9, flow: 25},
-    {head: 2.2, flow: 28},
-    {head: 1.9, flow: 23},
-    {head: 4.4, flow: 3},
-    {head: 4.9, flow: 21},
-    {head: 3.3, flow: 13},
-    {head: 2.2, flow: 23},
-    {head: 2.8, flow: 30},
-    {head: 3.5, flow: 27},
-    {head: 2.2, flow: 25},
-    {head: 4.1, flow: 17},
-    {head: 4.9, flow: 14},
-    {head: 3.3, flow: 26},
-    {head: 1.1, flow: 27}
-  ]
-  ;
+    { head: 3.1, flow: 19 },
+    { head: 2.4, flow: 17 },
+    { head: 1.6, flow: 23 },
+    { head: 2.8, flow: 19 },
+    { head: 2.1, flow: 20 },
+    { head: 4.9, flow: 22 },
+    { head: 4.4, flow: 29 },
+    { head: 1.3, flow: 19 },
+    { head: 4.7, flow: 16 },
+    { head: 2.3, flow: 17 },
+    { head: 2.9, flow: 27 },
+    { head: 1.6, flow: 27 },
+    { head: 4.8, flow: 26 },
+    { head: 1.1, flow: 12 },
+    { head: 1.0, flow: 30 },
+    { head: 4.9, flow: 23 },
+    { head: 3.3, flow: 22 },
+    { head: 1.1, flow: 4 },
+    { head: 3.6, flow: 13 },
+    { head: 1.9, flow: 25 },
+    { head: 2.2, flow: 28 },
+    { head: 1.9, flow: 23 },
+    { head: 4.4, flow: 3 },
+    { head: 4.9, flow: 21 },
+    { head: 3.3, flow: 13 },
+    { head: 2.2, flow: 23 },
+    { head: 2.8, flow: 30 },
+    { head: 3.5, flow: 27 },
+    { head: 2.2, flow: 25 },
+    { head: 4.1, flow: 17 },
+    { head: 4.9, flow: 14 },
+    { head: 3.3, flow: 26 },
+    { head: 1.1, flow: 27 },
+  ];
 
   const limitsGroup = [
     { head: 1, flow: { min: 25, max: 30 } },
@@ -67,7 +65,6 @@ const PumpGraph = () => {
     { head: 4, flow: { min: 18, max: 28 } },
     { head: 5, flow: { min: 8, max: 25 } },
     { head: 6, flow: { min: 0, max: 10 } },
-    // {head:7,flow:{min:5,max:23}}
   ];
 
   const isWithinGroupedLimits = (head, flow) => {
@@ -80,8 +77,6 @@ const PumpGraph = () => {
 
   const pointColor = isWithinGroupedLimits(currentPoint.head, currentPoint.flow) ? 'green' : 'orange';
 
-  // State for current operating point
-  
   const genval = () => {
     setTimeout(() => {
       const math = Math.floor(Math.random() * 30);
@@ -91,16 +86,36 @@ const PumpGraph = () => {
   genval();
 
   useEffect(() => {
-     genval(); // Uncomment if you want to auto-generate random values
+    genval(); // Uncomment if you want to auto-generate random values
   }, []);
 
-  // Handler for input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentPoint((prevPoint) => ({
       ...prevPoint,
       [name]: Number(value),
     }));
+  };
+
+  // Create datasets for max and min bandwidths
+  const maxBandwidthData = {
+    label: 'Max Flow Limit',
+    data: limitsGroup.map(limit => ({ x: limit.head, y: limit.flow.max })),
+    borderColor: 'rgba(255, 0, 0, 0.5)', // Red for max
+    borderWidth: 1,
+    fill: false,
+    tension: 0.4,
+    borderDash: [5, 5], // Dashed line
+  };
+
+  const minBandwidthData = {
+    label: 'Min Flow Limit',
+    data: limitsGroup.map(limit => ({ x: limit.head, y: limit.flow.min })),
+    borderColor: 'rgba(0, 0, 255, 0.5)', // Blue for min
+    borderWidth: 1,
+    fill: false,
+    tension: 0.4,
+    borderDash: [5, 5], // Dashed line
   };
 
   // Chart.js data configuration
@@ -118,11 +133,13 @@ const PumpGraph = () => {
         label: 'Current Operating Point',
         data: [{ x: currentPoint.head, y: currentPoint.flow }],
         pointRadius: 10, // Size of the red dot
-        pointBackgroundColor: pointColor, // Red color for the point
+        pointBackgroundColor: pointColor, // Green or orange color for the point
         pointBorderColor: 'black', // Black border for the point
         showLine: false, // No line connecting this point
         fill: false,
       },
+      maxBandwidthData, // Add the max flow limit dataset
+      minBandwidthData, // Add the min flow limit dataset
     ],
   };
 
@@ -169,20 +186,20 @@ const PumpGraph = () => {
       <div className="flex justify-center space-x-4 mb-6">
         <div>
           <label className="block text-sm font-medium text-gray-700">Head (m):</label>
-          <input 
-            type="number" 
-            name="head" 
-            value={currentPoint.head} 
+          <input
+            type="number"
+            name="head"
+            value={currentPoint.head}
             onChange={handleInputChange}
             className="border p-2 rounded-md"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Flow Rate (L/min):</label>
-          <input 
-            type="number" 
-            name="flow" 
-            value={currentPoint.flow} 
+          <input
+            type="number"
+            name="flow"
+            value={currentPoint.flow}
             onChange={handleInputChange}
             className="border p-2 rounded-md"
           />
