@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const PumpGraph = () => {
 
@@ -102,8 +102,9 @@ const PumpGraph = () => {
     label: 'Max Flow Limit',
     data: limitsGroup.map(limit => ({ x: limit.head, y: limit.flow.max })),
     borderColor: 'rgba(255, 0, 0, 0.5)', // Red for max
+    backgroundColor: 'rgba(255, 0, 0, 0.1)', // Light red for the fill
     borderWidth: 1,
-    fill: false,
+    // fill: 'origin', // Fill from the minimum value
     tension: 0.4,
     borderDash: [5, 5], // Dashed line
   };
@@ -112,8 +113,9 @@ const PumpGraph = () => {
     label: 'Min Flow Limit',
     data: limitsGroup.map(limit => ({ x: limit.head, y: limit.flow.min })),
     borderColor: 'rgba(0, 0, 255, 0.5)', // Blue for min
+    backgroundColor: 'rgba(255, 0, 0, 0.1)', // Light blue for the fill
     borderWidth: 1,
-    fill: false,
+    fill: '-1', // Fill to the previous dataset
     tension: 0.4,
     borderDash: [5, 5], // Dashed line
   };
@@ -138,8 +140,8 @@ const PumpGraph = () => {
         showLine: false, // No line connecting this point
         fill: false,
       },
-      maxBandwidthData, // Add the max flow limit dataset
-      minBandwidthData, // Add the min flow limit dataset
+      maxBandwidthData, // Add the max flow limit dataset with fill
+      minBandwidthData, // Add the min flow limit dataset with fill
     ],
   };
 
