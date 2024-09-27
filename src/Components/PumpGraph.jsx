@@ -113,7 +113,7 @@ const PumpGraph = () => {
     label: 'Min Flow Limit',
     data: limitsGroup.map(limit => ({ x: limit.head, y: limit.flow.min })),
     borderColor: 'rgba(0, 0, 255, 0.5)', // Blue for min
-    backgroundColor: 'rgba(255, 0, 0, 0.1)', // Light blue for the fill
+    backgroundColor: 'rgba(100, 255, 20, 0.3)', // Light green for the fill
     borderWidth: 1,
     fill: '-1', // Fill to the previous dataset
     tension: 0.4,
